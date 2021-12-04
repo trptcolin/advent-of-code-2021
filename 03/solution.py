@@ -40,10 +40,15 @@ def part_one(path):
     return gamma(c) * epsilon(c)
 
 
-def most_common_digit(i, xs):
-    c = collections.Counter({"0": 0, "1": 0})
+def count_digits_at_position(i, xs):
+    c = collections.Counter()
     for x in xs:
         c[x[i]] += 1
+    return c
+
+
+def most_common_digit(i, xs):
+    c = count_digits_at_position(i, xs)
     if c["0"] > c["1"]:
         return "0"
     else:
@@ -51,29 +56,27 @@ def most_common_digit(i, xs):
 
 
 def least_common_digit(i, xs):
-    c = collections.Counter({"0": 0, "1": 0})
-    for x in xs:
-        c[x[i]] += 1
+    c = count_digits_at_position(i, xs)
     if c["0"] <= c["1"]:
         return "0"
     else:
         return "1"
 
 
-def oxygen_generator_rating(numbers):
+def updating_rating(f, numbers):
     for i, c in enumerate(numbers):
         if len(numbers) > 1:
-            digit = most_common_digit(i, numbers)
+            digit = f(i, numbers)
             numbers = [n for n in numbers if n[i] == digit]
     return int(numbers[0], base=2)
+
+
+def oxygen_generator_rating(numbers):
+    return updating_rating(most_common_digit, numbers)
 
 
 def co2_scrubber_rating(numbers):
-    for i, c in enumerate(numbers):
-        if len(numbers) > 1:
-            digit = least_common_digit(i, numbers)
-            numbers = [n for n in numbers if n[i] == digit]
-    return int(numbers[0], base=2)
+    return updating_rating(least_common_digit, numbers)
 
 
 def part_two(path):
