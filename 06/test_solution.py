@@ -22,27 +22,27 @@ def test_advance_day():
     fish = solution.Fish(3)
     assert fish.timer == 3
 
-    n = fish.advance_day()
-    assert fish.timer == 2
+    x, n = fish.advance_day()
+    assert x == 2
     assert n == None
 
-    n = fish.advance_day()
-    assert fish.timer == 1
+    x, n = fish.advance_day()
+    assert x == 1
     assert n == None
 
-    n = fish.advance_day()
-    assert fish.timer == 0
+    x, n = fish.advance_day()
+    assert x == 0
     assert n == None
 
-    n = fish.advance_day()
-    assert fish.timer == 6
+    x, n = fish.advance_day()
+    assert x == 6
     assert n != None
     assert n.timer == 8
 
 
-# def test_part_two():
-#    with tempfile.NamedTemporaryFile() as f:
-#        f.write(bytes(example_input, "UTF-8"))
-#        f.seek(0)
-#
-#        assert solution.part_two(f.name, 256) == 26984457539
+def test_part_two():
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(bytes(example_input, "UTF-8"))
+        f.seek(0)
+
+        assert solution.part_two(f.name, 256) == 26984457539
