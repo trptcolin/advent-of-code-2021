@@ -14,65 +14,42 @@ class Signal:
         self.mappings = {}
 
     def find_unique_patterns(self):
-        patterns_to_remove = []
         for pattern in self.signal_patterns:
             if len(pattern) == 2:
                 self.mappings[1] = pattern
-                patterns_to_remove.append(pattern)
             elif len(pattern) == 4:
                 self.mappings[4] = pattern
-                patterns_to_remove.append(pattern)
             elif len(pattern) == 3:
                 self.mappings[7] = pattern
-                patterns_to_remove.append(pattern)
             elif len(pattern) == 7:
                 self.mappings[8] = pattern
-                patterns_to_remove.append(pattern)
-        for pattern in patterns_to_remove:
-            self.signal_patterns.remove(pattern)
 
     def find_six(self):
-        patterns_to_remove = []
         for pattern in self.signal_patterns:
             if (
                 len(pattern) == 6
                 and pattern.union(self.mappings[1]) == self.mappings[8]
             ):
                 self.mappings[6] = pattern
-                patterns_to_remove.append(pattern)
-        for pattern in patterns_to_remove:
-            self.signal_patterns.remove(pattern)
 
     def find_zero_and_nine(self):
-        patterns_to_remove = []
         for pattern in self.signal_patterns:
-            if len(pattern) == 6:
+            if len(pattern) == 6 and pattern != self.mappings[6]:
                 if pattern.union(self.mappings[4]) == self.mappings[8]:
                     self.mappings[0] = pattern
-                    patterns_to_remove.append(pattern)
                 else:
                     self.mappings[9] = pattern
-                    patterns_to_remove.append(pattern)
-
-        for pattern in patterns_to_remove:
-            self.signal_patterns.remove(pattern)
 
     def find_more(self):
         # remaining: 2, 3, 5
-        patterns_to_remove = []
         for pattern in self.signal_patterns:
-            if pattern.union(self.mappings[1]) == pattern:
-                self.mappings[3] = pattern
-                patterns_to_remove.append(pattern)
-            elif pattern.union(self.mappings[1]) == self.mappings[9]:
-                self.mappings[5] = pattern
-                patterns_to_remove.append(pattern)
-            else:
-                self.mappings[2] = pattern
-                patterns_to_remove.append(pattern)
-
-        for pattern in patterns_to_remove:
-            self.signal_patterns.remove(pattern)
+            if len(pattern) == 5:
+                if pattern.union(self.mappings[1]) == pattern:
+                    self.mappings[3] = pattern
+                elif pattern.union(self.mappings[1]) == self.mappings[9]:
+                    self.mappings[5] = pattern
+                else:
+                    self.mappings[2] = pattern
 
     def resolve_output(self):
         self.find_unique_patterns()
