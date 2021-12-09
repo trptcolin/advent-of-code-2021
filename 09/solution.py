@@ -12,6 +12,13 @@ def adjacent_to_point(i, j, i_limit, j_limit):
     ]
 
 
+class Location:
+    def __init__(self, x, y, height):
+        self.x = x
+        self.y = y
+        self.height = height
+
+
 def low_points(heightmap):
     results = []
     for i, line in enumerate(heightmap):
@@ -22,14 +29,14 @@ def low_points(heightmap):
                     for (i, j) in adjacent_to_point(i, j, len(heightmap), len(line))
                 ]
             ):
-                results.append(value)
+                results.append(Location(i, j, value))
     return results
 
 
 def part_one(path):
     heightmap = read_input(path)
     lows = low_points(heightmap)
-    risk_levels = [x + 1 for x in lows]
+    risk_levels = [x.height + 1 for x in lows]
     return sum(risk_levels)
 
 
