@@ -31,3 +31,22 @@ def test_part_one():
         f.seek(0)
 
         assert solution.part_one(f.name) == 15
+
+
+def test_basin_sizes():
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(bytes(example_input, "UTF-8"))
+        f.seek(0)
+
+        heightmap = solution.read_input(f.name)
+        location_map = solution.LocationMap(heightmap)
+        basins = solution.basin_sizes(location_map)
+        assert sorted([len(basin) for basin in basins]) == [3, 9, 9, 14]
+
+
+def test_part_two():
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(bytes(example_input, "UTF-8"))
+        f.seek(0)
+
+        assert solution.part_two(f.name) == 1134
