@@ -24,6 +24,7 @@ class Grid:
     def __init__(self, values):
         self.grid_size = len(values)
         self.flashes = 0
+        self.all_flashed_this_step = False
         self.octopi = [
             [Octopus(x, i, j) for i, x in enumerate(line)]
             for j, line in enumerate(values)
@@ -81,6 +82,10 @@ class Grid:
                         self.flashes += 1
                         to_process.add(neighbor)
 
+        if len(all_flashed_this_step) == self.grid_size * self.grid_size:
+            self.all_flashed_this_step = True
+        else:
+            self.all_flashed_this_step = False
         for octopus in all_flashed_this_step:
             octopus.energy = 0
 
@@ -98,7 +103,13 @@ def part_one(path):
 
 
 def part_two(path):
-    pass
+    grid = read_input(path)
+
+    # arbitrarily capping it
+    for i in range(10000):
+        grid.step()
+        if grid.all_flashed_this_step:
+            return i + 1
 
 
 if __name__ == "__main__":

@@ -33,6 +33,14 @@ def test_part_one():
         assert solution.part_one(f.name) == 1656
 
 
+def test_part_two():
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(bytes(large_example_input, "UTF-8"))
+        f.seek(0)
+
+        assert solution.part_two(f.name) == 195
+
+
 def test_read_input():
     with tempfile.NamedTemporaryFile() as f:
         f.write(bytes(small_example_input, "UTF-8"))
