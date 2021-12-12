@@ -13,10 +13,13 @@ class Path:
         else:
             self.counts = counts
 
-    def with_added_cave(self, cave):
-        counts = self.counts.copy()
-        counts.update([cave])
-        return Path(self.small_cave_visit_limit, [*self.caves, cave], counts)
+    def add_cave(self, cave):
+        self.caves.append(cave)
+        self.counts[cave] += 1
+
+    def remove_last_cave(self):
+        cave = self.caves.pop()
+        self.counts[cave] -= 1
 
     def is_valid(self):
         limit = self.small_cave_visit_limit
@@ -69,9 +72,10 @@ class CaveMap:
         for neighbor in neighbors:
             if neighbor == "start":
                 continue
-            path = this_path.with_added_cave(neighbor)
-            if path.is_valid():
-                self.find_routes(neighbor, path, completed_routes)
+            this_path.add_cave(neighbor)
+            if this_path.is_valid():
+                self.find_routes(neighbor, this_path, completed_routes)
+            this_path.remove_last_cave()
         return completed_routes
 
 
