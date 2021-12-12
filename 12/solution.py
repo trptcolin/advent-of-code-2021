@@ -5,33 +5,33 @@ lowercase_letters = set(string.ascii_lowercase)
 
 
 class Path:
-    def __init__(self, small_cave_visit_limit, caves, counts=None):
-        self.caves = caves
+    def __init__(self, small_cave_visit_limit, caves):
         self.small_cave_visit_limit = small_cave_visit_limit
-        if counts == None:
-            self.counts = collections.Counter(caves)
-        else:
-            self.counts = counts
+        self.counts = collections.Counter()
+        self.caves = []
+        for cave in caves:
+            self.add_cave(cave)
 
     def add_cave(self, cave):
         self.caves.append(cave)
-        self.counts[cave] += 1
+        if cave[0] in lowercase_letters:
+            self.counts[cave] += 1
 
     def remove_last_cave(self):
         cave = self.caves.pop()
-        self.counts[cave] -= 1
+        if cave[0] in lowercase_letters:
+            self.counts[cave] -= 1
 
     def is_valid(self):
         limit = self.small_cave_visit_limit
         small_cave_repeat_visits = 0
         for cave in self.counts:
-            if cave[0] in lowercase_letters:
-                if self.counts[cave] > 2:
+            if self.counts[cave] > 2:
+                return False
+            if self.counts[cave] > 1:
+                small_cave_repeat_visits += 1
+                if small_cave_repeat_visits > self.small_cave_visit_limit:
                     return False
-                if self.counts[cave] > 1:
-                    small_cave_repeat_visits += 1
-                    if small_cave_repeat_visits > self.small_cave_visit_limit:
-                        return False
 
         return True
 
@@ -58,12 +58,11 @@ class CaveMap:
             this_path = Path(self.small_cave_visit_limit, [this_cave])
         if completed_routes == None:
             completed_routes = []
-        end_cave = "end"
 
         if not this_path.is_valid():
             return
 
-        if this_cave == end_cave:
+        if this_cave == "end":
             completed_routes.append(this_path)
             return
 
@@ -73,8 +72,7 @@ class CaveMap:
             if neighbor == "start":
                 continue
             this_path.add_cave(neighbor)
-            if this_path.is_valid():
-                self.find_routes(neighbor, this_path, completed_routes)
+            self.find_routes(neighbor, this_path, completed_routes)
             this_path.remove_last_cave()
         return completed_routes
 
