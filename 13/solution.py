@@ -19,26 +19,25 @@ class Instructions:
     def fold_vertical(self, n):
         updated_points = set()
         for x, y in self.points:
-            updated_y = y
-            if x < n:
-                updated_x = x
-            else:
-                distance_away = x - n
-                updated_x = x - (2 * distance_away)
-            updated_points.add((updated_x, updated_y))
+            point = self.updated_point(y, x, n)
+            updated_points.add(point)
         self.points = updated_points
 
     def fold_horizontal(self, n):
         updated_points = set()
         for x, y in self.points:
-            updated_x = x
-            if y < n:
-                updated_y = y
-            else:
-                distance_away = y - n
-                updated_y = y - (2 * distance_away)
-            updated_points.add((updated_x, updated_y))
+            point = self.updated_point(x, y, n)
+            updated_points.add(point)
         self.points = updated_points
+
+    def updated_point(self, x, y, n):
+        updated_x = x
+        if y < n:
+            updated_y = y
+        else:
+            distance_away = y - n
+            updated_y = y - (2 * distance_away)
+        return (updated_x, updated_y)
 
     def display(self):
         max_x = 0
