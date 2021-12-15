@@ -1,3 +1,4 @@
+import collections
 import inspect
 import tempfile
 import solution
@@ -24,12 +25,12 @@ example_input = inspect.cleandoc(
 )
 
 
-def read_example():
+def read_example(p=solution.Polymer):
     with tempfile.NamedTemporaryFile() as f:
         f.write(bytes(example_input, "UTF-8"))
         f.seek(0)
 
-        return solution.read_input(f.name)
+        return solution.read_input(f.name, p)
 
 
 def test_read_input():
@@ -65,3 +66,26 @@ def test_part_one():
         f.seek(0)
 
         assert solution.part_one(f.name) == 1588
+
+
+def test_advance_better():
+    polymer = read_example(solution.BetterPolymer)
+    assert polymer.element_counts() == collections.Counter("NNCB")
+    polymer.advance()
+    assert polymer.element_counts() == collections.Counter("NCNBCHB")
+    polymer.advance()
+    assert polymer.element_counts() == collections.Counter("NBCCNBBBCBHCB")
+    polymer.advance()
+    assert polymer.element_counts() == collections.Counter("NBBBCNCCNBBNBNBBCHBHHBCHB")
+    polymer.advance()
+    assert polymer.element_counts() == collections.Counter(
+        "NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB"
+    )
+
+
+def test_part_two():
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(bytes(example_input, "UTF-8"))
+        f.seek(0)
+
+        assert solution.part_two(f.name) == 2188189693529
