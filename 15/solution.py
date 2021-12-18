@@ -22,45 +22,30 @@ class CaveMap:
         return self.grid[y][x]
 
     # This is Dijkstra's algorithm we're just coding in it
-    def shortest_path(self, start=None, end=None):
-        if not start:
-            start = (0, 0)
-        if not end:
-            end = (self.x_size - 1, self.y_size - 1)
+    # Directly from https://bradfieldcs.com/algos/graphs/dijkstras-algorithm/ - thanks Bradfield folks!
+    def shortest_path(self, start):
+        all_locations = [(x, y) for x in range(self.x_size) for y in range(self.y_size)]
+        distances = {location: float("infinity") for location in all_locations}
 
-        unvisited = [
-            (self.risk_level((x, y)), (x, y))
-            for x in range(self.x_size)
-            for y in range(self.y_size)
-        ]
+        pq = [(0, start)]
+        while len(pq) > 0:
+            current_distance, current_vertex = heapq.heappop(pq)
 
-        max_value = sys.maxsize
-        shortest = {}
-        for risk_level, location in unvisited:
-            shortest[location] = max_value
+            # don't traverse worse paths than we've seen
+            if current_distance > distances[current_vertex]:
+                continue
 
-        shortest[start] = 0
-        previous = {}
-
-        while len(unvisited) > 0:
-            current_min = None
-            for risk_level, location in unvisited:
-                if current_min == None:
-                    current_min = location
-                elif shortest[location] < shortest[current_min]:
-                    current_min = location
-
-            neighbors = self.neighbors(current_min)
-
+            neighbors = self.neighbors(current_vertex)
             for neighbor in neighbors:
-                best_so_far = shortest[current_min] + self.risk_level(neighbor)
-                if best_so_far < shortest[neighbor]:
-                    shortest[neighbor] = best_so_far
-                    previous[neighbor] = current_min
+                weight = self.risk_level(neighbor)
+                distance = current_distance + weight
 
-            unvisited.remove((self.risk_level(current_min), current_min))
+                # update distance to this neighbor if it's better
+                if distance < distances[neighbor]:
+                    distances[neighbor] = distance
+                    heapq.heappush(pq, (distance, neighbor))
 
-        return previous, shortest
+        return distances
 
 
 def render_path(previous, start, end):
@@ -103,14 +88,14 @@ def increase_grid_size(grid):
 
 def part_one(path):
     cave_map = read_input(path)
-    previous, shortest = cave_map.shortest_path((0, 0))
+    shortest = cave_map.shortest_path((0, 0))
     return shortest[(cave_map.x_size - 1, cave_map.y_size - 1)]
 
 
 def part_two(path):
     small_map = read_input(path)
     cave_map = CaveMap(increase_grid_size(small_map.grid))
-    previous, shortest = cave_map.shortest_path((0, 0))
+    shortest = cave_map.shortest_path((0, 0))
     return shortest[(cave_map.x_size - 1, cave_map.y_size - 1)]
 
 

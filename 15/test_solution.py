@@ -40,10 +40,10 @@ def test_neighbors():
 
 def test_shortest_path():
     cave_map = read_input()
-    previous, shortest = cave_map.shortest_path((0, 0))
+    shortest = cave_map.shortest_path((0, 0))
     assert shortest[(9, 9)] == 40
-    path = solution.render_path(previous, (0, 0), (9, 9))
-    assert len(path) == 19
+    # path = solution.render_path(previous, (0, 0), (9, 9))
+    # assert len(path) == 19
 
 
 def test_part_one():
