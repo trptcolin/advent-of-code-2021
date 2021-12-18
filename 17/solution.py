@@ -34,11 +34,15 @@ class Probe:
         self.y_velocity -= 1
 
 
-def highest_y(target):
+def find_hits(target):
     overall_highest_y = -float("infinity")
+    all_hits = set()
 
-    for x_velocity in range(target.x_max):
-        for y_velocity in range(abs(target.y_min)):
+    max_possible_y = max(abs(target.y_min), abs(target.y_max))
+    min_possible_y = min(-abs(target.y_min), -abs(target.y_max))
+
+    for x_velocity in range(target.x_max + 1):
+        for y_velocity in range(min_possible_y, max_possible_y + 1):
             probe = Probe(0, 0, x_velocity, y_velocity)
             this_highest_y = -float("infinity")
             while probe.x < target.x_max and probe.y > target.y_min:
@@ -49,17 +53,21 @@ def highest_y(target):
                     and target.y_min <= probe.y <= target.y_max
                 ):
                     overall_highest_y = max(overall_highest_y, this_highest_y)
+                    all_hits.add((x_velocity, y_velocity))
 
-    return overall_highest_y
+    return overall_highest_y, all_hits
 
 
 def part_one(path):
     target = read_input(path)
-    return highest_y(target)
+    highest_y, all_hits = find_hits(target)
+    return highest_y
 
 
 def part_two(path):
-    pass
+    target = read_input(path)
+    highest_y, all_hits = find_hits(target)
+    return len(all_hits)
 
 
 if __name__ == "__main__":

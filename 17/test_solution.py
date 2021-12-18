@@ -22,8 +22,19 @@ def test_read_input():
 
 def test_part_one():
     target = read_input()
-    assert solution.highest_y(target) == 45
+    highest_y, all_hits = solution.find_hits(target)
+    assert highest_y == 45
     with tempfile.NamedTemporaryFile() as f:
         f.write(bytes(example_input, "UTF-8"))
         f.seek(0)
         assert solution.part_one(f.name) == 45
+
+
+def test_part_two():
+    target = read_input()
+    highest_y, all_hits = solution.find_hits(target)
+    assert len(all_hits) == 112
+    with tempfile.NamedTemporaryFile() as f:
+        f.write(bytes(example_input, "UTF-8"))
+        f.seek(0)
+        assert solution.part_two(f.name) == 112
