@@ -13,7 +13,6 @@ def chunks(s, length):
 
 class LiteralPacket:
     def __init__(self, version, type_id, binary_string):
-        # print(f"reading literal v{version} from {binary_string}")
         self.version = version
         self.type_id = type_id
         groups = chunks(binary_string[6:], 5)
@@ -24,7 +23,6 @@ class LiteralPacket:
                 break
         self.value = int(value_string, base=2)
         self.length = int(6 + (len(value_string) / 4) * 5)
-        # print(f"literal value: {self.value}, length: {self.length}")
 
     def version_sum(self):
         return self.version
@@ -35,13 +33,11 @@ class LiteralPacket:
 
 class OperatorPacket:
     def __init__(self, version, type_id, binary_string):
-        # print(f"reading operator v{version} from {binary_string}")
         self.version = version
         self.type_id = type_id
         self.length_type_id = int(binary_string[6], base=2)
         if self.length_type_id == 0:
             self.subpacket_bit_length = int(binary_string[7:22], base=2)
-            # print("subpacket_bit_length:", self.subpacket_bit_length)
             remaining_bit_length = self.subpacket_bit_length
             self.subpackets = []
             relevant_string = binary_string[22 : 22 + self.subpacket_bit_length]
@@ -55,7 +51,6 @@ class OperatorPacket:
         else:
             # length_type_id == 0 (since binary)
             self.subpacket_count = int(binary_string[7:18], base=2)
-            # print("subpacket_count:", self.subpacket_count)
             remaining_subpackets = self.subpacket_count
             self.subpackets = []
             relevant_string = binary_string[18:]
@@ -65,7 +60,6 @@ class OperatorPacket:
                 relevant_string = relevant_string[packet.length :]
                 remaining_subpackets -= 1
             self.length = 18 + sum([packet.length for packet in self.subpackets])
-        # print("operator packet length:", self.length)
 
     def version_sum(self):
         return self.version + sum([packet.version_sum() for packet in self.subpackets])
@@ -97,7 +91,6 @@ def read_packet_from_hex(s):
 
 
 def read_packet(binary_string):
-    # print("reading packet:", binary_string)
     version = int(binary_string[:3], base=2)
     type_id = int(binary_string[3:6], base=2)
     if type_id == 4:
