@@ -26,6 +26,7 @@ class CaveMap:
     def shortest_path(self, start):
         all_locations = [(x, y) for x in range(self.x_size) for y in range(self.y_size)]
         distances = {location: float("infinity") for location in all_locations}
+        previous = {location: [location] for location in all_locations}
 
         pq = [(0, start)]
         while len(pq) > 0:
@@ -44,8 +45,9 @@ class CaveMap:
                 if distance < distances[neighbor]:
                     distances[neighbor] = distance
                     heapq.heappush(pq, (distance, neighbor))
+                    previous[neighbor] = current_vertex
 
-        return distances
+        return previous, distances
 
 
 def render_path(previous, start, end):
@@ -88,14 +90,14 @@ def increase_grid_size(grid):
 
 def part_one(path):
     cave_map = read_input(path)
-    shortest = cave_map.shortest_path((0, 0))
+    previous, shortest = cave_map.shortest_path((0, 0))
     return shortest[(cave_map.x_size - 1, cave_map.y_size - 1)]
 
 
 def part_two(path):
     small_map = read_input(path)
     cave_map = CaveMap(increase_grid_size(small_map.grid))
-    shortest = cave_map.shortest_path((0, 0))
+    previous, shortest = cave_map.shortest_path((0, 0))
     return shortest[(cave_map.x_size - 1, cave_map.y_size - 1)]
 
 
