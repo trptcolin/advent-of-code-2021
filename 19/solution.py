@@ -4,6 +4,7 @@ import re
 header_re = re.compile(r"--- scanner \d+.*")
 beacon_re = re.compile(r"([\-\d]+),([\-\d]+),([\-\d]+)")
 
+all_beacons = set()
 
 orientations = [
     lambda x, y, z: (x, y, z),
@@ -49,21 +50,23 @@ class Scanner:
     def __init__(self, beacons):
         self.beacons = beacons
         self.translation = (0, 0, 0)
+        self.reference_scanner = None
 
+    # IDEA: can we grow the known map instead of intersecting just with individual Scanners?
     def intersect(self, other):
-        beacon_set = set(self.beacons)
         for orientation_index in range(24):
             rotate = orientations[orientation_index]
             other_reoriented = {rotate(*beacon) for beacon in other.beacons}
             # no need to search the whole list since we need 12 collisions
-            for this_beacon in self.beacons[:-11]:
+            for this_beacon in all_beacons:
                 for other_beacon in other_reoriented:
                     difference = subtract(this_beacon, other_beacon)
                     moved = {add(beacon, difference) for beacon in other_reoriented}
-                    matches = beacon_set.intersection(moved)
+                    matches = all_beacons.intersection(moved)
                     if len(matches) >= 12:
                         other.translation = difference
                         other.beacons = list(moved)
+                        all_beacons.update(moved)
                         return matches
 
 
@@ -86,6 +89,7 @@ def read_input(path):
 def do_the_stuff(path):
     scanners = list(read_input(path))
     translated_scanners = [scanners[0]]
+    all_beacons.update(set(scanners[0].beacons))
     untranslated_scanners = collections.deque(scanners[1:])
     while len(untranslated_scanners) > 0:
         scanner_to_translate = untranslated_scanners.popleft()
@@ -111,9 +115,6 @@ def do_the_stuff(path):
 
 def part_one(path):
     translated_scanners = do_the_stuff(path)
-    all_beacons = set()
-    for scanner in translated_scanners:
-        all_beacons.update(set(scanner.beacons))
     return len(all_beacons)
 
 
@@ -125,9 +126,6 @@ def manhattan_distance(x, y):
 
 def part_one_and_two(path):
     translated_scanners = do_the_stuff(path)
-    all_beacons = set()
-    for scanner in translated_scanners:
-        all_beacons.update(set(scanner.beacons))
     print("Part 1:", len(all_beacons))
 
     biggest_distance_so_far = 0
