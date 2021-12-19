@@ -1,3 +1,4 @@
+import functools
 import json
 
 
@@ -183,20 +184,12 @@ def read_input_values(path):
 
 
 def read_input(path):
-    pairs = []
     for values in read_input_values(path):
-        pairs.append(make_snailfish_number(values))
-    return pairs
+        yield make_snailfish_number(values)
 
 
 def sum_list(pairs):
-    result = None
-    for pair in pairs:
-        if result == None:
-            result = pair
-        else:
-            result = result.add(pair)
-    return result
+    return functools.reduce(lambda x, y: x.add(y), pairs)
 
 
 def part_one(path):
