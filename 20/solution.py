@@ -57,23 +57,29 @@ def print_image(image):
     print("\n".join(["".join(line) for line in image]))
 
 
+def enhance_n_times(enhancement_algorithm, input_image, times):
+    output_image = input_image
+    replacement = "."
+    for i in range(times):
+        print(f"enhancing [step {i}/{times}]...")
+        output_image, replacement = enhance_image(
+            output_image, enhancement_algorithm, replacement
+        )
+    return output_image
+
+
 def part_one(path):
     enhancement_algorithm, input_image = read_input(path)
     replacement = "."
-    # print_image(input_image)
-    output_image, replacement = enhance_image(
-        input_image, enhancement_algorithm, replacement
-    )
-    # print_image(output_image)
-    output_image, replacement = enhance_image(
-        output_image, enhancement_algorithm, replacement
-    )
-    # print_image(output_image)
+    output_image = enhance_n_times(enhancement_algorithm, input_image, 2)
     return len([c for line in output_image for c in line if c == "#"])
 
 
 def part_two(path):
-    pass
+    enhancement_algorithm, input_image = read_input(path)
+    replacement = "."
+    output_image = enhance_n_times(enhancement_algorithm, input_image, 50)
+    return len([c for line in output_image for c in line if c == "#"])
 
 
 if __name__ == "__main__":

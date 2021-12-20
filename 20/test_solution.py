@@ -37,3 +37,7 @@ def test_resolve_pixels_to_output_value():
 
 def test_part_one():
     assert solution.part_one("example_input.txt") == 35
+
+
+def test_part_two():
+    assert solution.part_two("example_input.txt") == 3351
