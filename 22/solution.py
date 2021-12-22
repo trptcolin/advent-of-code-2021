@@ -25,16 +25,34 @@ def read_input(path):
             if match:
                 value, *groups = match.groups()
                 x_min, x_max, y_min, y_max, z_min, z_max = [int(s) for s in groups]
-                step = Step(value, x_min, x_max + 1, y_min, y_max + 1, z_min, z_max + 1)
+                step = Step(value, x_min, x_max, y_min, y_max, z_min, z_max)
                 yield step
 
 
 def run(steps):
-    all_x_values = sorted([v for step in steps for v in [step.x_min, step.x_max]])
-    all_y_values = sorted([v for step in steps for v in [step.y_min, step.y_max]])
-    all_z_values = sorted([v for step in steps for v in [step.z_min, step.z_max]])
+    all_x_values = sorted(
+        [
+            v
+            for step in steps
+            for v in [step.x_min, step.x_min + 1, step.x_max, step.x_max + 1]
+        ]
+    )
+    all_y_values = sorted(
+        [
+            v
+            for step in steps
+            for v in [step.y_min, step.y_min + 1, step.y_max, step.y_max + 1]
+        ]
+    )
+    all_z_values = sorted(
+        [
+            v
+            for step in steps
+            for v in [step.z_min, step.z_min + 1, step.z_max, step.z_max + 1]
+        ]
+    )
 
-    n = 2 * len(steps)
+    n = 4 * len(steps)
     # NOTE: too much memory w/ lists
     matrix = collections.defaultdict(
         lambda: collections.defaultdict(lambda: collections.defaultdict(lambda: False))
@@ -42,11 +60,11 @@ def run(steps):
 
     for step in steps:
         x_min_index = all_x_values.index(step.x_min)
-        x_max_index = all_x_values.index(step.x_max)
+        x_max_index = all_x_values.index(step.x_max + 1)
         y_min_index = all_y_values.index(step.y_min)
-        y_max_index = all_y_values.index(step.y_max)
+        y_max_index = all_y_values.index(step.y_max + 1)
         z_min_index = all_z_values.index(step.z_min)
-        z_max_index = all_z_values.index(step.z_max)
+        z_max_index = all_z_values.index(step.z_max + 1)
 
         for i in range(x_min_index, x_max_index):
             for j in range(y_min_index, y_max_index):
@@ -77,11 +95,11 @@ def part_one(path):
         step
         for step in steps
         if step.x_min >= -limit
-        and step.x_max < limit
+        and step.x_max <= limit
         and step.y_min >= -limit
-        and step.y_max < limit
+        and step.y_max <= limit
         and step.z_min >= -limit
-        and step.z_max < limit
+        and step.z_max <= limit
     ]
     return run(filtered_steps)
 
