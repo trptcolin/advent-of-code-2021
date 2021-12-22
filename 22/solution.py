@@ -37,7 +37,7 @@ def part_one(path):
     z_max = max([s.z_max for s in steps])
 
     matrix = [
-        [["off" for k in range(z_min, z_max + 1)] for j in range(y_min, y_max + 1)]
+        [[False for k in range(z_min, z_max + 1)] for j in range(y_min, y_max + 1)]
         for i in range(x_min, x_max + 1)
     ]
     print(x_min, x_max, y_min, y_max, z_min, z_max)
@@ -46,13 +46,13 @@ def part_one(path):
         for i in range(step.x_min - x_min, step.x_max - x_min + 1):
             for j in range(step.y_min - y_min, step.y_max - y_min + 1):
                 for k in range(step.z_min - z_min, step.z_max - z_min + 1):
-                    matrix[i][j][k] = step.value
+                    matrix[i][j][k] = step.value == "on"
 
     total_on = 0
     for i in range(len(matrix)):
         for j in range(len(matrix[0])):
             for k in range(len(matrix[0][0])):
-                if matrix[i][j][k] == "on":
+                if matrix[i][j][k]:
                     total_on += 1
     return total_on
 
