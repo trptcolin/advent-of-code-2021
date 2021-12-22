@@ -7,3 +7,12 @@ def test_example_one():
 
 def test_example_two():
     assert solution.part_one("example_input_2.txt") == 590784
+
+
+def test_example_three():
+    assert solution.part_one("example_input_3.txt") == 300
+
+
+def test_part_two():
+    assert solution.part_one("example_input_4.txt") == 474140
+    assert solution.part_two("example_input_4.txt") == 2758514936282235
