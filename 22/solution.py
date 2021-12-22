@@ -29,6 +29,17 @@ def read_input(path):
 
 def part_one(path):
     steps = list(read_input(path))
+    limit = 50
+    steps = [
+        step
+        for step in steps
+        if step.x_min >= -limit
+        and step.x_max <= limit
+        and step.y_min >= -limit
+        and step.y_max <= limit
+        and step.z_min >= -limit
+        and step.z_max <= limit
+    ]
     x_min = min([s.x_min for s in steps])
     y_min = min([s.y_min for s in steps])
     z_min = min([s.z_min for s in steps])
